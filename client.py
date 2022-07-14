@@ -30,10 +30,33 @@ class Client:
       # if you need to send data you will need to append it
       send_udp(syn_header.bits())
       self.update_state(States.SYN_SENT)
+      self.last_ack = 0
+      self.last_seq_num = 0
+      self.receive_acks()
+      if self.last_ack == seq_num + 1:
+        ack_header = utils.Header(self.last_ack, self.last_seq_num + 1, syn = 0, ack = 1)
+        send_udp(ack_header.bits())
+        print("Sent ACK")
+        # update state to established connection
+        self.update_state(States.EST) 
     else:
       pass
 
   def terminate(self):
+    fin_header = utils.Header(utils.rand_int(), 0, syn = 0, ack = 0) 
+    # update state to fin wait 1
+    self.update_state(States.FIN_WAIT_1)
+    send_udp(fin_header.bits())
+    self.last_ack = 0
+    self.last_seq_num = 0
+    self.receive_acks()
+    # update state to fin wait 2
+    self.update_state(States.FIN_WAIT_2)
+    fin_ack_header = utils.Header(self.last_ack, self.last_seq_num + 1, syn = 0, ack = 1) 
+    send_udp(fin_ack_header.bits())
+    print("Final ACK has been sent")
+    # update state to closed termination
+    self.update_state(States.CLOSED)
     pass
 
   def update_state(self, new_state):
