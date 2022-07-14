@@ -7,7 +7,7 @@ DEBUG = True
 # Refer TCP protocol
 class States(Enum):
 	CLOSED, LISTEN \
-	, SYN_RECEIVED, SYN_SENT = range(1, 5), FIN_WAIT_1,FIN_WAIT_2,CLOSE_WAIT 
+	, SYN_RECEIVED, SYN_SENT = range(1, 5), FIN_WAIT_1, FIN_WAIT_2, CLOSE_WAIT, EST 
 
 class Header:
 	def __init__(self, seq_num, ack_num, syn, ack):
