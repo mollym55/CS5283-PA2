@@ -89,7 +89,7 @@ class Client:
         lst_rec_ack_shared.value = header.ack_num
   def receive_acks(self):
     # Start receive_acks_sub_process as a process
-    lst_rec_ack_shared = Value('i', self.last_received_ack)
+    lst_rec_ack_shared = Value('i', self.last_ack)
     p = multiprocessing.Process(target=self.receive_acks_sub_process, args=(lst_rec_ack_shared,))
     p.start()
     # Wait for 1 seconds or until process finishes
