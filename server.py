@@ -46,6 +46,9 @@ while True:
     if header.syn == 1:
       seq_number = utils.rand_int() # we randomly pick a sequence number
       ack_number = header.seq_num + 1
+      syn_ack_header = utils.Header(seq_number, ack_number, header.syn + 1, header.ack + 1)
+      sock.sendto(syn_ack_header.bits(), addr)
+      update_server_state(States.SYN_RECEIVED)
       # to be implemented
 
       ### sending message from the server:
@@ -54,8 +57,13 @@ while True:
       #   sock.sendto(your_header_object.bits(), addr)
 
   elif server_state == States.SYN_RECEIVED:
-    pass
+     header, body, addr = recv_msg()
+     print("ACK recieved")
+     if header.ack_num == syn_ack_header.seq_num + 1 and header.seq_num == syn_ack_header.ack_num:
+       update_server_state(States.EST)
   elif server_state == States.SYN_SENT:
-    pass
+    header, body, addr = recv_msg()
+    print("ACK sent", header)
+  
   else:
     pass
